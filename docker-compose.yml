@@ -1,12 +1,16 @@
 services:
   web:
-    build: .
+    image: caddy:2-alpine
     ports:
-      - "6888:80"
+      - "80:80"
       - "443:443"
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
+      - ./dist:/srv
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

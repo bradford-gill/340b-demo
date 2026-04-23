@@ -1,23 +1,25 @@
 #!/bin/bash
 
-# Using a local deploy script instead of GitHub Actions because the repo is on
-# a free GitHub plan, which does not include Actions minutes for private repos.
-
 set -e
 
 SERVER_USER="ubuntu"
 SERVER_HOST="54.210.244.233"
 SSH_KEY="$HOME/Desktop/LightsailDefaultKey-us-east-1.pem"
+REMOTE_DIR="/home/ubuntu/340b-demo"
 
-echo "Pushing to main..."
-git push origin main
+echo "Building..."
+cd project && npm run build && cd ..
 
-echo "Deploying to $SERVER_HOST..."
-ssh -A -i "$SSH_KEY" "$SERVER_USER@$SERVER_HOST" '
-  cd /home/ubuntu/340b-demo &&
-  echo "Pulling latest code..." &&
-  git pull origin main &&
-  docker compose up --build -d
-'
+echo "Syncing to $SERVER_HOST..."
+rsync -az --delete -e "ssh -i $SSH_KEY" \
+  project/dist/ "$SERVER_USER@$SERVER_HOST:$REMOTE_DIR/dist/"
+
+rsync -az -e "ssh -i $SSH_KEY" \
+  docker-compose.yml project/Caddyfile \
+  "$SERVER_USER@$SERVER_HOST:$REMOTE_DIR/"
+
+echo "Restarting container..."
+ssh -i "$SSH_KEY" "$SERVER_USER@$SERVER_HOST" \
+  "cd $REMOTE_DIR && docker compose up -d"
 
 echo "Done! Site is live."
