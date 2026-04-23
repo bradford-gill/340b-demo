@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-bg: #0B0F19;
+  --app-surface: #111827;
+  --app-elevated: #1F2937;
+  --app-input: #161E2E;
+
+  --content-primary: #F8FAFC;
+  --content-secondary: #CBD5E1;
+  --content-tertiary: #94A3B8;
+  --content-quaternary: #64748B;
+  --content-muted: #475569;
+  --content-faint: #334155;
+
+  --border-subtle: #1E293B;
+  --border-default: #334155;
+  --border-focus: #3B82F6;
+
+  --danger-solid: #EF4444;
+  --danger-text: #FCA5A5;
+  --danger-border: #B91C1C;
+  --warning-solid: #F59E0B;
+  --warning-text: #FCD34D;
+  --safe-solid: #10B981;
+  --safe-text: #6EE7B7;
+  --info-solid: #3B82F6;
+  --info-text: #93C5FD;
+
+  --chart-grid: rgba(148, 163, 184, 0.08);
+  --chart-shadow: rgba(0, 0, 0, 0.3);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) var(--app-surface);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--app-surface);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--content-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid var(--border-focus);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px var(--chart-shadow);
+  cursor: grab;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid var(--border-focus);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px var(--chart-shadow);
+  cursor: grab;
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  cursor: grabbing;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.2s ease-out;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; color: black; }
+}
