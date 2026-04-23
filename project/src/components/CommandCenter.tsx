@@ -33,6 +33,11 @@ export default function CommandCenter({ hospital }: CommandCenterProps) {
   const riskRating = thresholdDistance < 0 ? 'danger' : thresholdDistance < 0.5 ? 'warning' : 'safe';
   const riskLabel = riskRating === 'danger' ? 'Critical' : riskRating === 'warning' ? 'Elevated' : 'Stable';
 
+  const roiCostPerAttempt = 45;
+  const roiAttemptsPerPatient = 2.3;
+  const roiTotalCost = roiCostPerAttempt * roiAttemptsPerPatient * hospital.patientsDueRedetermination;
+  const roiRatio = Math.round(hospital.estimated340bMargin / roiTotalCost);
+
   return (
     <div className="space-y-8">
       <div>
@@ -40,6 +45,30 @@ export default function CommandCenter({ hospital }: CommandCenterProps) {
         <p className="text-sm text-content-tertiary">
           Real-time operational dashboard — monitoring 340B qualification and intervention progress
         </p>
+      </div>
+
+      <div className="bg-safe-bg border border-safe-border rounded-xl p-8 flex items-center justify-between">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-safe-text mb-2">
+            Return on intervention
+          </div>
+          <div className="font-mono text-7xl font-bold text-safe-text leading-none">
+            {roiRatio}:1
+          </div>
+          <div className="text-sm text-content-secondary mt-3">
+            for every $1 spent on patient outreach, <span className="font-semibold text-safe-text">{formatCurrency(hospital.estimated340bMargin)}</span> in 340B margin is protected
+          </div>
+        </div>
+        <div className="text-right shrink-0 ml-8 space-y-4">
+          <div>
+            <div className="text-xs text-content-muted uppercase tracking-wide mb-1">Outreach cost</div>
+            <div className="font-mono text-xl font-semibold text-content-secondary">{formatCurrency(roiTotalCost)}</div>
+          </div>
+          <div>
+            <div className="text-xs text-content-muted uppercase tracking-wide mb-1">Margin protected</div>
+            <div className="font-mono text-xl font-semibold text-safe-text">{formatCurrency(hospital.estimated340bMargin)}</div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 xl:grid-cols-6 gap-4">

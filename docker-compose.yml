@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    ports:
+      - "6888:80"
+      - "443:443"
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config

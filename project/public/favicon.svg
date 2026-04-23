@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Shield -->
+  <path d="M16 2L4 7v9c0 7 5.4 12.6 12 14 6.6-1.4 12-7 12-14V7L16 2z" fill="#0f766e"/>
+  <!-- Cross -->
+  <rect x="13" y="9" width="6" height="14" rx="1.5" fill="white"/>
+  <rect x="9" y="13" width="14" height="6" rx="1.5" fill="white"/>
+</svg>

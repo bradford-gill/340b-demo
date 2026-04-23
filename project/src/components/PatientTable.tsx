@@ -2,6 +2,29 @@ import { useState, useMemo } from 'react';
 import type { Patient } from '../data/patients';
 import { daysUntil } from '../utils/formatters';
 
+function exportCallList(patients: Patient[]) {
+  const headers = ['Rank', 'Name', 'Medicaid ID', 'Recert Deadline', 'Days Left', 'Risk Level', 'Exemption Status', 'DSH Impact', 'Recommended Action'];
+  const rows = patients.map((p) => [
+    p.priorityRank,
+    p.name,
+    p.medicaidId,
+    p.nextRedetermination,
+    daysUntil(p.nextRedetermination),
+    p.riskLevel,
+    p.exemptionStatus,
+    `${p.dshImpactIfLost.toFixed(4)}%`,
+    `"${p.suggestedAction}"`,
+  ]);
+  const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `340b-priority-call-list-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 interface PatientTableProps {
   patients: Patient[];
   onSelectPatient: (patient: Patient) => void;
@@ -150,6 +173,12 @@ export default function PatientTable({ patients, onSelectPatient, selectedPatien
         <div className="text-xs text-content-muted">
           {filtered.length} of {patients.length} patients
         </div>
+        <button
+          onClick={() => exportCallList(filtered)}
+          className="ml-auto shrink-0 bg-info-solid hover:opacity-90 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-opacity"
+        >
+          Export call list
+        </button>
       </div>
 
       <div className="bg-app-surface border border-border-subtle rounded-xl overflow-hidden">

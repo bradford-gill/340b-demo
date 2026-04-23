@@ -35,6 +35,9 @@ export default function ThresholdRisk({ hospital }: ThresholdRiskProps) {
 
   const perPatientValue = patientsNeeded > 0 ? hospital.estimated340bMargin / patientsNeeded : 0;
 
+  const patientsRetained = Math.round(interventionLevel * totalChurnNoIntervention);
+  const baselineAtRisk = willCrossThreshold(hospital, 0);
+
   return (
     <div className="space-y-8">
       <div>
@@ -43,6 +46,30 @@ export default function ThresholdRisk({ hospital }: ThresholdRiskProps) {
           Projected disproportionate patient percentage over the next 12 months under OBBBA redetermination rules
         </p>
       </div>
+
+      {baselineAtRisk && (
+        <div className="bg-danger-bg border border-danger-border rounded-xl p-6 flex items-center justify-between">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-widest text-danger-text mb-2">
+              340B eligibility at risk — without intervention
+            </div>
+            <div className="font-mono text-5xl font-bold text-danger-text leading-none">
+              {formatCurrency(hospital.estimated340bMargin)}
+            </div>
+            <div className="text-sm text-content-secondary mt-2">
+              in annual 340B margin could be lost entirely
+            </div>
+          </div>
+          <div className="text-right shrink-0 ml-8">
+            <div className="text-xs text-content-muted mb-1 uppercase tracking-wide">Current DPP</div>
+            <div className="font-mono text-3xl font-bold text-content-primary">{formatPercent(hospital.currentDPP, 2)}</div>
+            <div className="text-xs text-danger-text mt-1 font-medium">Threshold: 11.75%</div>
+            <div className="text-xs text-content-muted mt-2">
+              {formatNumber(hospital.patientsDueRedetermination)} patients due for redetermination
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-app-surface border border-border-subtle rounded-xl p-6">
         <DPPChart hospital={hospital} interventionLevel={interventionLevel} height={340} />
@@ -70,6 +97,20 @@ export default function ThresholdRisk({ hospital }: ThresholdRiskProps) {
             <span className="text-xs text-content-muted">Full intervention</span>
           </div>
         </div>
+        {interventionLevel > 0 && (
+          <div className={`rounded-lg px-4 py-3 flex items-center justify-between text-sm transition-colors duration-300 ${
+            atRisk ? 'bg-danger-bg border border-danger-border' : 'bg-safe-bg border border-safe-border'
+          }`}>
+            <span className={atRisk ? 'text-danger-text' : 'text-safe-text'}>
+              Retaining <span className="font-mono font-semibold">{formatNumber(patientsRetained)}</span> patients at this intervention level
+            </span>
+            <span className={`font-mono font-semibold ${atRisk ? 'text-danger-text' : 'text-safe-text'}`}>
+              {atRisk
+                ? `${formatCurrency(hospital.estimated340bMargin)} still at risk`
+                : `${formatCurrency(hospital.estimated340bMargin)} protected`}
+            </span>
+          </div>
+        )}
       </div>
 
       <div
