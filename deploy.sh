@@ -13,12 +13,11 @@ echo "Pushing to main..."
 git push origin main
 
 echo "Deploying to $SERVER_HOST..."
-ssh -i "$SSH_KEY" "$SERVER_USER@$SERVER_HOST" '
-  cd /home/ubuntu/340b-demo 
-  && echo "Pulling latest code..." 
-  && pwd
-  && git pull origin main
-  && docker compose up --build -d
+ssh -A -i "$SSH_KEY" "$SERVER_USER@$SERVER_HOST" '
+  cd /home/ubuntu/340b-demo &&
+  echo "Pulling latest code..." &&
+  git pull origin main &&
+  docker compose up --build -d
 '
 
 echo "Done! Site is live."
