@@ -1,13 +1,11 @@
 services:
   web:
-    image: caddy:2-alpine
+    build: .
     ports:
       - "80:80"
       - "443:443"
     restart: unless-stopped
     volumes:
-      - ./dist:/srv
-      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
 
